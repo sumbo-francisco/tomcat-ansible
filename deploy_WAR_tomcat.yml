@@ -1,0 +1,25 @@
+---
+  - name: Play to deploy the WAR file to Tomcat container
+    hosts: tomcat-nodes
+    become: yes
+    tasks:
+            - name: Copy the war file {{ webapp_name }}.war as {{ webapp_name }}.war.tmp to {{ webapp_destination_folder }}
+              copy:
+                      src: "{{ webapp_source_folder }}/{{ webapp_name }}.war"
+                      dest: "{{ webapp_destination_folder }}/{{ webapp_name }}.war.tmp"
+                      force: yes 
+
+            - name: Remove current war file {{ webapp_destination_folder }}\{{ webapp_name }}.war
+              file:
+                      path: "{{ webapp_destination_folder }}/{{ webapp_name }}.war"
+                      state: absent
+
+            - name: Wait until the webapp folder {{ webapp_destination_folder }}\{{ webapp_name }} is deleted
+              wait_for:
+                      path: "{{ webapp_destination_folder }}/{{ webapp_name }}.war"
+                      state: absent
+                      msg: folder_info
+
+            - name: rename the {{ webapp_name }}.war.tmp to {{ webapp_name }}.war
+              command: "mv {{ webapp_destination_folder }}/{{ webapp_name }}.war.tmp {{ webapp_destination_folder }}/{{ webapp_name }}.war"
+              register: cmd_result

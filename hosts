@@ -1,2 +1,9 @@
 [tomcat-nodes]
 52.23.181.218 # Add Server IP address, one line per server
+
+[tomcat-nodes:vars]
+ansible_ssh_pass=Angola123 
+ansible_ssh_user=jenkins
+webapp_name=spring-web-mvc-0.0.1-SNAPSHOT
+webapp_destination_folder=/opt/tomcat/webapps
+webapp_source_folder=/var/lib/jenkins/workspace/ansible-pipeline/target
